@@ -25,8 +25,8 @@ function List() {
         fetch('https://mocki.io/v1/67d12549-e5be-4679-ba32-1229a58c692a')
             .then(res => res.json())
             .then(data => {
-                setList(data.map((i: IEmployee) => ({...i, selected: false})))
-                setOrigList(data.map((i: IEmployee) => ({...i, selected: false})));
+                setList(data.map((i: IEmployee) => ({ ...i, selected: false })))
+                setOrigList(data.map((i: IEmployee) => ({ ...i, selected: false })));
             })
             .catch(error => {
                 alert('Error while Fetching.');
@@ -34,7 +34,7 @@ function List() {
     }, []);
 
     const applySort = (desc = false): void => {
-        const sortedList = origList.sort((a, b) => {
+        const sortedList = list.sort((a, b) => {
             if (sortColRef.current) {
                 if (desc === false) {
                     return a[`${sortColRef.current}`] >= b[`${sortColRef.current}`] ? 0 : -1;
@@ -58,28 +58,16 @@ function List() {
     const handleSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAllChecked(prev => !prev)
         if (e.target.checked) {
-            // console.log('selected entities length:', selectedEntities.length)
-            // setSelectedEntities(JSON.parse(JSON.stringify(list)));
-            setList(prev => prev.map(val => ({...val, selected: true})))
+            setList(prev => prev.map(val => ({ ...val, selected: true })))
         } else {
-            console.log("yo")
-            setList(prev => prev.map(val => ({...val, selected: false})))
+            setList(prev => prev.map(val => ({ ...val, selected: false })))
         }
     }
 
     const addToSelected = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
-        console.log('id', id);
-        // if (e.target.checked) {
-        //     const newSelected = selectedEntities.filter((li) => li.email === id);
-        //     console.log('selected after update:', newSelected)
-        // } else {
-        //     const newSelected = selectedEntities.filter((li) => li.email !== id);
-        //     console.log('selected after update 2:', newSelected)
-        // }
         const temp = list.map(val => {
-            console.log(id)
-            if(val.name === id){
-                return ({...val, selected: !val.selected})
+            if (val.name === id) {
+                return ({ ...val, selected: !val.selected })
             }
             return val
         })
@@ -89,9 +77,7 @@ function List() {
 
     useEffect(() => {
         const allCheck = list.find(i => i.selected === false)
-        console.log(allCheck, list)
         setAllChecked(allCheck === undefined)
-
     }, [list])
 
     return (
@@ -179,7 +165,7 @@ function List() {
 
                                         }
                                         {
-                                            Array.isArray(emp.teams) &&  emp.teams?.length > 3 && (
+                                            Array.isArray(emp.teams) && emp.teams?.length > 3 && (
                                                 <div className='badge'>
                                                     +{emp.teams.length - 3}
                                                 </div>
