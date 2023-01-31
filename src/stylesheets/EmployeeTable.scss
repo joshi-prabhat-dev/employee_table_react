@@ -1,0 +1,173 @@
+@use 'colors' as c;
+@use 'sizes' as s;
+@use 'mixins' as m;
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+/*==============================================
+// Controls ...
+==============================================*/
+
+.controls-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+
+    .control-entity {
+        display: flex;
+        gap: 10px;
+
+        select {
+            width: 100px;
+            padding-block: 8px;
+            font-size: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.6);
+            border-radius: 4px;
+            background-color: transparent;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        }
+
+        .control-btn {
+            width: 70px;
+            padding-block: 8px;
+            cursor: pointer;
+        }
+
+        .filter-btn {
+            width: 120px;
+        }
+
+        .control-input {
+            width: 240px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.6);
+            padding-inline: 8px;
+        }
+    }
+
+
+}
+
+
+/*==============================================
+// Table ...
+==============================================*/
+
+.table {
+    border-spacing: 0;
+    border-radius: 10px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+
+    .tr {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+
+        .cell {
+            font-size: 14px;
+            width: max-content;
+            text-align: left;
+        }
+
+        .name-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .username {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        .teams-cell {
+            display: flex;
+            gap: 6px;
+        }
+    }
+
+    th {
+        font-weight: 400;
+    }
+
+    .hrow {
+        padding-block: 16px;
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .brow {
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        transition: background .1s linear;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    .tr-check {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+
+/*==============================================
+// Badge Styles ...
+==============================================*/
+
+.badge {
+    @include m.badge;
+    font-size: s.$font-size-2;
+    background-color: c.$shadow-color-0;
+}
+
+.red {
+    color: c.$red-0;
+    background-color: c.$red-bg-0;
+}
+
+.blue0 {
+    color: c.$blue-0;
+    background-color: c.$blue-bg-0;
+}
+
+.blue1 {
+    color: c.$blue-1;
+    background-color: c.$blue-bg-1;
+}
+
+.blue2 {
+    color: c.$blue-2;
+    background-color: c.$blue-bg-2;
+}
+
+
+/*==============================================
+// Widths ...
+==============================================*/
+
+.w1 {
+    width: s.$width-1 !important;
+}
+
+.w2 {
+    width: s.$width-2 !important;
+}
+
+.w3 {
+    width: s.$width-3 !important;
+}
