@@ -13,12 +13,19 @@ export interface IEmployee {
     selected?: boolean;
 }
 
+export interface AFilters {
+    status: string;
+    role: string;
+}
+
 
 function List() {
     const [origList, setOrigList] = useState<Record<string, string | string[] | boolean>[]>([]);
     const [list, setList] = useState<Record<string, string | string[] | boolean>[]>([]);
 
-    const sortColRef = useRef<HTMLSelectElement>(null);
+    const [appliedFilters, setAppliedFilters] = useState<AFilters>({ status: '', role: '' });
+
+    const [sortSelect, setSortSelect] = useState<string>('name');
     const [allChecked, setAllChecked] = useState(false)
 
     useEffect(() => {
@@ -33,23 +40,38 @@ function List() {
             });
     }, []);
 
+    useEffect(() => {
+        const allCheck = list.find(i => i.selected === false)
+        setAllChecked(allCheck === undefined)
+    }, [list]);
+
+    useEffect(() => {
+        const filteredList = appliedFilters.status === '' ? origList : origList.filter((li) => (li.status === appliedFilters.status));
+        const filteredAgain = appliedFilters.role === '' ? filteredList : filteredList.filter((li) => (li.role === appliedFilters.role));
+        setList(filteredAgain);
+    }, [appliedFilters, origList]);
+
     const applySort = (desc = false): void => {
         const sortedList = list.sort((a, b) => {
-            if (sortColRef.current) {
-                if (desc === false) {
-                    return a[`${sortColRef.current}`] >= b[`${sortColRef.current}`] ? 0 : -1;
-                } else {
-                    return a[`${sortColRef.current}`] <= b[`${sortColRef.current}`] ? 0 : -1;
-                }
+            if (desc === false) {
+                return a[`${sortSelect}`] >= b[`${sortSelect}`] ? 0 : -1;
+            } else {
+                return a[`${sortSelect}`] <= b[`${sortSelect}`] ? 0 : -1;
             }
-            return 1;
         });
         setList(JSON.parse(JSON.stringify(sortedList)));
     };
 
-    const applyFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const filteredList = e.target.value ? origList.filter((listItem) => {
-            if (listItem[`${e.target.name}`] === e.target.value) return true;
+    const applyFilter = (filterName: string, filterValue: string) => {
+        setAppliedFilters((currentFilters) => {
+            if (filterName === 'role') {
+                return { ...currentFilters, role: filterValue };
+            } else {
+                return { ...currentFilters, status: filterValue };
+            }
+        });
+        const filteredList = filterValue ? list.filter((listItem) => {
+            if (listItem[filterName] === filterValue) return true;
             return false;
         }) : origList;
         setList(filteredList);
@@ -64,27 +86,21 @@ function List() {
         }
     }
 
-    const addToSelected = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const addToSelected = (id: string) => {
         const temp = list.map(val => {
             if (val.name === id) {
                 return ({ ...val, selected: !val.selected })
             }
-            return val
+            return val;
         })
         setList(temp);
-
     }
-
-    useEffect(() => {
-        const allCheck = list.find(i => i.selected === false)
-        setAllChecked(allCheck === undefined)
-    }, [list])
 
     return (
         <div className='container'>
             <div className='controls-container'>
                 <div className='control-entity sort-container'>
-                    <select ref={sortColRef}>
+                    <select value={sortSelect} onChange={(e) => setSortSelect(e.target.value)}>
                         <option value='name'>Name</option>
                         <option value='role'>Role</option>
                     </select>
@@ -93,13 +109,13 @@ function List() {
                 </div>
                 <div className='control-entity filter-container'>
                     <label htmlFor='status'>Status</label>
-                    <select onChange={applyFilter} id='status' name='status' >
+                    <select onChange={(e) => applyFilter(e.target.name, e.target.value)} id='status' name='status' >
                         <option value=''>All</option>
                         <option value='working'>Working</option>
                         <option value='not_working'>Not Working</option>
                     </select>
                     <label htmlFor='role'>Role</label>
-                    <select onChange={applyFilter} id='role' name='role'>
+                    <select onChange={(e) => applyFilter(e.target.name, e.target.value)} id='role' name='role'>
                         <option value=''>All</option>
                         <option value='Developer'>Developer</option>
                         <option value='Product Manager'>Product Manager</option>
@@ -129,7 +145,7 @@ function List() {
                             return (
                                 <tr className='tr brow' key={index}>
                                     <td>
-                                        <input type='checkbox' checked={!!emp.selected} onChange={(e) => addToSelected(e, emp.name.toString())} className='tr-check' />
+                                        <input type='checkbox' checked={!!emp.selected} onChange={(e) => addToSelected(emp.name.toString())} className='tr-check' />
                                     </td>
                                     <td className={`cell bcell name-cell w2`}>
                                         <div>{emp.name}</div>
